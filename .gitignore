@@ -1,0 +1,13 @@
+# Environment
+.env
+
+# Go settings
+go.mod
+go.sum
+
+# Documentation
+/docs
+/z_help
+
+# Claude
+/.claude
