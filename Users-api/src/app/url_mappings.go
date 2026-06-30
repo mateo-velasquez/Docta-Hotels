@@ -1,18 +1,11 @@
 package app
 
-import (
-	"users-api/src/controller"
-
-	log "github.com/sirupsen/logrus"
-)
+import log "github.com/sirupsen/logrus"
 
 func mapUrls() {
-
-	// Add all methods and its mappings
-	router.POST("/user", controller.InsertUser)
-	router.GET("/user/:id", controller.GetUserById)
-	router.GET("/user", controller.GetUsers)
-	router.POST("/login", controller.UserLogin)
+	router.GET("/users/:id", serviceController.GetUserById)
+	router.POST("/users", serviceController.CreateUser)
+	router.POST("/login", serviceController.Login)
 
 	log.Info("Finishing mappings configurations")
 }
