@@ -1,0 +1,143 @@
+services:
+
+  # ── Infraestructura ────────────────────────────────────────────────────────
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/01_init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  solr:
+    image: solr:9
+    command: solr-precreate hotels
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr_data:/var/solr
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  memcached:
+    image: memcached:1.6
+    ports:
+      - "11211:11211"
+
+  # ── Microservicios ─────────────────────────────────────────────────────────
+
+  users-api:
+    build:
+      context: ./users-api
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MEMCACHED_HOST: memcached
+      MEMCACHED_PORT: "11211"
+      JWT_KEY: ${JWT_KEY}
+    restart: on-failure
+    depends_on:
+      mysql:
+        condition: service_healthy
+      memcached:
+        condition: service_started
+
+  # hotels-api:
+  #   build:
+  #     context: ./hotels-api
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     MONGO_URI: mongodb://mongo:27017/hotels
+  #     RABBITMQ_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672/
+  #     JWT_KEY: ${JWT_KEY}
+  #   depends_on:
+  #     - mongo
+  #     - rabbitmq
+
+  # reservations-api:
+  #   build:
+  #     context: ./reservations-api
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     MYSQL_HOST: mysql
+  #     MYSQL_PORT: "3306"
+  #     MYSQL_DATABASE: reservations
+  #     MYSQL_USERNAME: root
+  #     MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #     HOTELS_API_URL: http://hotels-api:8080
+  #     JWT_KEY: ${JWT_KEY}
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+
+  # search-api:
+  #   build:
+  #     context: ./search-api
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     SOLR_URL: http://solr:8983/solr/hotels
+  #     MEMCACHED_HOST: memcached
+  #     MEMCACHED_PORT: "11211"
+  #     HOTELS_API_URL: http://hotels-api:8080
+  #     RESERVATIONS_API_URL: http://reservations-api:8080
+  #     RABBITMQ_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672/
+  #     JWT_KEY: ${JWT_KEY}
+  #   depends_on:
+  #     - solr
+  #     - memcached
+  #     - rabbitmq
+
+  # nginx:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - users-api
+  #     - hotels-api
+  #     - reservations-api
+  #     - search-api
+
+volumes:
+  mysql_data:
+  mongo_data:
+  solr_data:
+  rabbitmq_data:
