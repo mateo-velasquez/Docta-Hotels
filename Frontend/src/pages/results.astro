@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/ui/Card';
+
+// Mocked data for results since Search-api is not implemented yet
+const mockedHotels = [
+  {
+    id: "h1",
+    name: "Hotel Docta Central",
+    description: "Ubicado en el corazón de la ciudad con acceso a los mejores centros comerciales y gastronómicos. Perfecto para viajes de negocios o turismo urbano.",
+    score: 4.8,
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+    price: 120
+  },
+  {
+    id: "h2",
+    name: "Resort Vista Bella",
+    description: "Un resort exclusivo con vistas panorámicas a las sierras. Cuenta con spa, tres piscinas y restaurantes de primera clase.",
+    score: 4.5,
+    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+    price: 250
+  },
+  {
+    id: "h3",
+    name: "Posada El Descanso",
+    description: "Un lugar tranquilo y acogedor, ideal para escapar del ruido de la ciudad y conectar con la naturaleza.",
+    score: 4.2,
+    image: "https://images.unsplash.com/photo-1542314831-c6a4d27ce66f?auto=format&fit=crop&w=600&q=80",
+    price: 80
+  }
+];
+---
+
+<Layout title="Resultados de Búsqueda">
+  <div class="container" style="padding: 2rem 1rem;">
+    <h1 class="text-2xl font-bold mb-6">Hoteles Disponibles</h1>
+    
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+      {mockedHotels.map(hotel => (
+        <Card style={{ display: 'flex', flexDirection: 'row', padding: '0', overflow: 'hidden' }}>
+          <img src={hotel.image} alt={hotel.name} style="width: 300px; height: 200px; object-fit: cover;" />
+          <div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                <h2 class="text-xl font-bold">{hotel.name}</h2>
+                <span style="background-color: var(--accent); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold;">
+                  ★ {hotel.score}
+                </span>
+              </div>
+              <p class="text-secondary mb-4">{hotel.description}</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="text-xl font-bold">${hotel.price} <span class="text-sm text-secondary font-medium">/ noche</span></span>
+              <a href={`/hotel/${hotel.id}`} style="background-color: var(--accent); color: white; padding: 0.5rem 1.5rem; border-radius: var(--radius-md); font-weight: 600;">
+                Ver Detalle
+              </a>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  </div>
+</Layout>

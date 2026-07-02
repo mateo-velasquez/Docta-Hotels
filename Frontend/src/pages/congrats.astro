@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card } from '../components/ui/Card';
+
+const status = Astro.url.searchParams.get('status') || 'success';
+const message = Astro.url.searchParams.get('message') || 'La operación se realizó con éxito.';
+
+const isSuccess = status === 'success';
+---
+
+<Layout title={isSuccess ? "¡Éxito!" : "Error"}>
+  <div class="container flex justify-center items-center" style="min-height: calc(100vh - 200px);">
+    <Card style={{ width: '100%', maxWidth: '500px', padding: '3rem', textAlign: 'center' }}>
+      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+        {isSuccess ? (
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        ) : (
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+        )}
+      </div>
+      
+      <h1 class="text-2xl font-bold mb-2">{isSuccess ? '¡Operación Exitosa!' : 'Hubo un problema'}</h1>
+      <p class="text-secondary mb-8">{message}</p>
+      
+      <div class="flex gap-4 justify-center">
+        <a href="/" style="background-color: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-primary); padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600;">
+          Volver al Inicio
+        </a>
+        <a href="/reservations" style="background-color: var(--accent); color: white; padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600;">
+          Mis Reservas
+        </a>
+      </div>
+    </Card>
+  </div>
+</Layout>

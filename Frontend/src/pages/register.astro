@@ -1,0 +1,57 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { RegisterForm } from '../components/forms/RegisterForm';
+---
+
+<AuthLayout title="Registro">
+  <div class="auth-form-container">
+    <a href="/" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); font-weight: bold; font-size: 1.5rem; margin-bottom: 3rem; text-decoration: none;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M10 22v-6.57"/><path d="M12 11h.01"/><path d="M12 7h.01"/><path d="M14 15.43V22"/><path d="M15 16a5 5 0 0 0-6 0"/><path d="M16 11h.01"/><path d="M16 7h.01"/><path d="M8 11h.01"/><path d="M8 7h.01"/><rect x="4" y="2" width="16" height="20" rx="2"/></svg>
+      DoctaHotels
+    </a>
+    
+    <h2 class="auth-title">Crear una cuenta</h2>
+    <p class="auth-subtitle">
+      Ya tienes una cuenta? <a href="/login" class="auth-link">Inicia sesión aquí</a>.
+    </p>
+    
+    <RegisterForm client:load />
+  </div>
+
+  <style is:global>
+    .auth-form-container {
+      width: 100%;
+      max-width: 450px;
+      zoom: 1.25;
+    }
+
+    @media (max-width: 900px) {
+      .auth-form-container {
+        zoom: 1;
+      }
+    }
+    
+    .auth-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .auth-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+    .auth-link {
+      color: var(--text-primary);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .auth-link:hover {
+      color: var(--accent);
+    }
+  </style>
+</AuthLayout>

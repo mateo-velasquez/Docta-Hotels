@@ -1,0 +1,189 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Sistema Web para la Gestión de Reservas de Hoteles" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | Docta Hotels</title>
+		<script is:inline>
+			const theme = (() => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					return 'dark';
+				}
+				return 'light';
+			})();
+		
+			if (theme === 'light') {
+				document.documentElement.setAttribute('data-theme', 'light');
+			} else {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+			window.localStorage.setItem('theme', theme);
+		</script>
+	</head>
+	<body>
+        <main class="auth-layout">
+            <div class="auth-left">
+                <div class="bg-circles">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+                <div class="auth-left-content">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="auth-logo-large"><path d="M10 22v-6.57"/><path d="M12 11h.01"/><path d="M12 7h.01"/><path d="M14 15.43V22"/><path d="M15 16a5 5 0 0 0-6 0"/><path d="M16 11h.01"/><path d="M16 7h.01"/><path d="M8 11h.01"/><path d="M8 7h.01"/><rect x="4" y="2" width="16" height="20" rx="2"/></svg>
+                    <h1 class="auth-heading">¡Bienvenido! 👋</h1>
+                    <p class="auth-subheading">¡Hola! Que gusto verte por aquí. Te invitamos a que disfrutes de todos los beneficios que nuestra plataforma tiene para vos. ¡No te vas a arrepentir!</p>
+                </div>
+                <div class="auth-footer-text">
+                    &copy; {new Date().getFullYear()} Docta Hotels. Todos los derechos reservados.
+                </div>
+            </div>
+            <div class="auth-right">
+                <slot />
+            </div>
+        </main>
+		<style is:global>
+			.auth-layout {
+                display: flex;
+                min-height: 100vh;
+                width: 100%;
+                background: linear-gradient(135deg, #0b1536 0%, #2863c3ff 100%);
+            }
+            .auth-left {
+                flex: 1;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 4rem 10%;
+                position: relative;
+                overflow: hidden;
+            }
+            /* Noise background */
+            .auth-left::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+                opacity: 0.25;
+                mix-blend-mode: overlay;
+                z-index: 1;
+                pointer-events: none;
+            }
+            /* Background circles */
+            .bg-circles {
+                position: absolute;
+                bottom: -20%;
+                right: -10%;
+                width: 70%;
+                aspect-ratio: 1;
+                z-index: 0;
+                pointer-events: none;
+            }
+            .bg-circles .circle {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                border: 1.5px solid rgba(255, 255, 255, 0.08);
+                border-radius: 50%;
+            }
+            .bg-circles .circle:nth-child(1) { width: 100%; height: 100%; }
+            .bg-circles .circle:nth-child(2) { width: 130%; height: 130%; }
+            .bg-circles .circle:nth-child(3) { width: 160%; height: 160%; }
+            .bg-circles .circle:nth-child(4) { width: 190%; height: 190%; }
+            .bg-circles .circle:nth-child(5) { width: 220%; height: 220%; }
+            .bg-circles .circle:nth-child(6) { width: 250%; height: 250%; }
+
+            .auth-left-content {
+                position: relative;
+                z-index: 2;
+                max-width: 500px;
+            }
+            .auth-logo-large {
+                margin-bottom: 2rem;
+                color: white;
+            }
+            .auth-heading {
+                font-size: 3.5rem;
+                font-weight: 800;
+                line-height: 1.1;
+                margin-bottom: 1.5rem;
+                color: white;
+                letter-spacing: -0.02em;
+            }
+            .auth-subheading {
+                font-size: 1.125rem;
+                line-height: 1.6;
+                color: rgba(255, 255, 255, 0.85);
+            }
+            .auth-footer-text {
+                position: absolute;
+                bottom: 2rem;
+                left: 10%;
+                font-size: 0.875rem;
+                color: rgba(255, 255, 255, 0.6);
+                z-index: 2;
+            }
+            .auth-right {
+                flex: 1;
+                background-color: var(--bg-primary);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: clamp(32px, 5vh, 64px) clamp(16px, 5vw, 32px);
+                width: 100%;                
+
+                margin: 2rem 2rem 2rem -4rem;
+                border-radius: 1.5rem;
+                box-shadow: -15px 10px 40px rgba(0, 0, 0, 0.25);
+                position: relative;
+                z-index: 10;
+            }
+            
+            @media (max-width: 900px) {
+                .auth-layout {
+                    flex-direction: column;
+                }
+                .auth-left {
+                    padding: 3rem 2rem;
+                    flex: none;
+                    min-height: 40vh;
+                }
+                .auth-right {
+                    margin: 0;
+                    margin-top: -3rem;
+                    border-radius: 2rem 2rem 0 0;
+                    box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.2);
+                    padding: 3rem 1rem;
+                    justify-content: flex-start;
+                }
+                .auth-heading {
+                    font-size: 2.5rem;
+                }
+                .auth-footer-text {
+                    display: none;
+                }
+            }
+		</style>
+	</body>
+</html>

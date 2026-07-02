@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ReservationsList } from '../components/ReservationsList';
+---
+
+<Layout title="Mis Reservas">
+  <div class="container" style="padding: 2rem 1rem;">
+    <h1 class="text-2xl font-bold mb-6">Mis Reservas</h1>
+    <ReservationsList client:load />
+  </div>
+</Layout>
