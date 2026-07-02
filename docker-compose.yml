@@ -8,10 +8,11 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3306:3306"
+      - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql/01_init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+      - ./seeds/users/01_init.sql:/docker-entrypoint-initdb.d/01_init_users.sql:ro
+      - ./seeds/reservations/01_init.sql:/docker-entrypoint-initdb.d/02_init_reservations.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -91,21 +92,22 @@ services:
   #     - mongo
   #     - rabbitmq
 
-  # reservations-api:
-  #   build:
-  #     context: ./reservations-api
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     MYSQL_HOST: mysql
-  #     MYSQL_PORT: "3306"
-  #     MYSQL_DATABASE: reservations
-  #     MYSQL_USERNAME: root
-  #     MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-  #     HOTELS_API_URL: http://hotels-api:8080
-  #     JWT_KEY: ${JWT_KEY}
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
+  reservations-api:
+    build:
+      context: ./reservations-api
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8086"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: reservations
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    restart: on-failure
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   # search-api:
   #   build:

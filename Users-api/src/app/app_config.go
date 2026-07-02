@@ -6,7 +6,7 @@ import (
 	"users-api/config"
 	"users-api/src/controller"
 	repositories "users-api/src/repositories"
-	"users-api/src/service"
+	services "users-api/src/services"
 	"users-api/src/tokenizer"
 
 	log "github.com/sirupsen/logrus"
@@ -45,6 +45,6 @@ func initDependencies() {
 		Duration: config.JWTDuration,
 	})
 
-	svc := service.NewService(mySQLRepository, cacheRepository, memcachedRepository, jwtTokenizer)
+	svc := services.NewService(mySQLRepository, cacheRepository, memcachedRepository, jwtTokenizer)
 	serviceController = controller.NewController(svc)
 }
